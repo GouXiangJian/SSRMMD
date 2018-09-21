@@ -1,0 +1,60 @@
+Introduction
+============
+
+SSR_finder is a tool that doesn't rely on other software and modules.
+It is written in PERL5, so you should have PERL5 on your computer.
+You can download PERL5 from https://www.perl.org/
+
+Version
+=======
+
+SSR_finder v1.0
+
+Function
+========
+
+find SSR loci and polymorphic SSR candidate.
+
+Usage
+=====
+
+perl SSR_finder.pl -fasta1 <fasta_file1> -fasta2 <fasta_file2> -se <search_condition_file> -st <step_num>
+
+Required Options
+================
+
+  -fasta1      <file>   : A file of fasta format used to find SSR loci.
+  -se|-search  <file>   : A file used to set SSR search conditions, and its content should be like this:
+                          motif_len     min_repeat_num
+                          1             10
+                          2             7
+                          3             6
+                          4             5
+                          5             4
+                          6             4
+
+Optional Options
+================
+
+  -fasta2      <file>   : A file of fasta format used to find SSR loci. If not, the program will only look for
+                          SSR loci for fasta file1, similarly, not find polymorphic SSR candidate.
+  -genome1     <file>   : A file of fasta format used to specify the reference genome of fasta1. If not, it is
+                          assumed that the reference genome of fasta1 is itself.
+  -genome2     <file>   : A file of fasta format used to specify the reference genome of fasta2. If not, it is
+                          assumed that the reference genome of fasta2 is itself.
+  -t|-thread   <int>    : An integer that sets the number of threads for the program to run. (default: 1)
+  -l|-length   <int>    : An integer that sets the length of SSR flanking sequence. (default: 150)
+  -st|-step    <int>    : It only be set to 1 or 2. And 1 for only find SSR loci, 2 for find polymorphic SSR
+                          candidate. (default: 1)
+  -h|-help              : show the help information
+  -v|-version           : show the version information
+
+Additional tool
+===============
+
+We also provide an additional statistical script: SSR_stater.pl, whose function is to
+count the number of SSRs with different repeat classifications under different motifs.
+It should be noted that the SSR_stater.pl only accept the file with suffix .all_SSRs
+outputed from SSR_finder.pl. And the use of this script is very simple, as follows:
+    
+    perl SSR_stater.pl <SSR_file>
