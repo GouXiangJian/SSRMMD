@@ -1,7 +1,0 @@
-motif_len	min_repeat_num
-1	10
-2	7
-3	6
-4	5
-5	4
-6	4
