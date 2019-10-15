@@ -1,0 +1,160 @@
+Author
+======
+
+Xiang-jian Gou and Hao-ran Shi
+
+Date
+====
+
+2019-03-30
+
+Introduction
+============
+
+SSRMMD (Simple Sequence Repeat Molecular Marker Developer) is a tool that doesn't rely
+on other softwares and modules. It can find out SSR loci and candidate polymorphic SSR 
+molecular marker. It is written in PERL5, so you should have PERL5 on your computer. 
+You can download PERL5 from https://www.perl.org/
+
+Download
+========
+
+You can download SSRMMD from https://github.com/GouXiangJian/SSRMMD
+
+Install
+=======
+
+You don't need to do anything extra, use it directly !
+
+Usage
+=====
+
+perl SSRMMD.pl option1 <value1> option2 <value2> ... optionN <valueN>
+
+Options
+=======
+
+  -f1|-fasta1  <str> : FASTA file use to find SSR loci (must be provided)
+  -f2|-fasta2  <str> : FASTA file (essential if need to find polymorphic loci)
+  -g1|-genome1 <str> : genome1 file of fasta1 (default: fasta1 file)
+  -g2|-genome2 <str> : genome2 file of fasta2 (default: fasta2 file)
+  -m |-motifs  <str> : threshold of motifs (default: 1=10,2=7,3=6,4=5,5=4,6=4)
+                       [ left  of equal : length of motif          ]
+                       [ right of equal : minimum number of repeat ]
+  -l |-length  <int> : length of SSR flanking sequence (default: 150)
+  -p |-poly    <int> : 0 = find SSR loci, 1 = find polymorphic loci (default:0)
+  -d |-detail  <int> : 1 = output intermediate file, 0 = not output (default:0)
+  -s |-stat    <int> : 1 = output statistical  file, 0 = not output (default:0)
+  -t |-thread  <int> : the number of threads for the program to run (default:1)
+  -v |-version       : show the version information
+  -h |-help          : show the help information
+
+
+Example - just find SSR loci
+============================
+
+Suppose you have a FASTA file named test.fa !
+
+example1 : Run SSRMMD with all default parameters :
+    perl SSRMMD.pl -f1 test.fa
+
+example2 : Set the flanking sequence to 200 bp and output SSR statistics :
+    perl SSRMMD.pl -f1 test.fa -l 200 -s 1
+
+example3 : Set the minimum number of repeat with motif length of 2,3 and 4 to 8, 7 and 6 respectively :
+    perl SSRMMD.pl -f1 test.fa -m 2=8,3=7,4=6
+
+example4 : Use 10 threads to calculate SSR loci :
+    perl SSRMMD.pl -f1 test.fa -t 10
+
+Note : We recommend using multi-threading (-t), and setting the number of threads to
+       the number of chromosomes in the genome to maximize the computational speed !
+       Of course, you can also set it larger, which is useless for finding SSR loci, 
+       but is useful for developing candidate polymorphic SSR.
+
+
+Example - find candidate polymorphic SSR in genome-wide
+=======================================================
+
+Suppose you have two genome FASTA files named genome1.fa and genome2.fa !
+
+example5 : Use 20 threads to find candidate polymorphic SSR :
+    perl SSRMMD.pl -f1 genome1.fa -f2 genome2.fa -p 1 -t 20
+
+example6 : Set the flanking sequence to 100 bp and output SSR statistics :
+    perl SSRMMD.pl -f1 genome1.fa -f2 genome2.fa -p 1 -l 100 -s 1
+
+Note : The flanking sequence of SSR need to be used for conservative check 
+       between genomes and for uniqueness check within the genome.
+
+
+Example - find candidate polymorphic SSR in part genome
+=======================================================
+
+Suppose you have two aim    FASTA files named test1.fa and   test2.fa   !
+Suppose you have two genome FASTA files named genome1.fa and genome2.fa !
+
+example7 : Use 20 threads to find candidate polymorphic SSR :
+    perl SSRMMD.pl -f1 test1.fa -f2 test2.fa -p 1 -g1 genome1.fa -g2 genome2.fa -t 20
+
+example8 : Output SSR statistics and detailed intermediate file :
+    perl SSRMMD.pl -f1 test1.fa -f2 test2.fa -p 1 -g1 genome1.fa -g2 genome2.fa -s 1 -d 1
+
+
+Output
+======
+
+Suppose you have two genome FASTA files named genome1.fa and genome2.fa !
+
+1. If you just find SSR loci, you will get a file(genome1.fa.all_SSRs_with_fs) suffixed
+   with 'all_SSRs_with_fs', which includes 11 columns :
+        1  - sequence name
+        2  - SSR motif
+        3  - motif length
+        4  - the number of motif repeats
+        5  - the total size of SSR
+        6  - start position
+        7  - end position
+        8  - left flanking sequence
+        9  - the length of left flanking sequence
+        10 - right flanking sequence
+        11 - the length of right flanking sequence
+
+2. If you find candidate polymorphic SSR, you will get three files(genome1.fa.all_SSRs,
+   genome2.fa.all_SSRs, genome1.fa-and-genome2.fa.compare), two of which end with 'all_SSRs' 
+   and one with 'compare'.
+
+   'genome1.fa.all_SSRs' or 'genome2.fa.all_SSRs' includes 7 columns :
+        1  - sequence name
+        2  - SSR motif
+        3  - motif length
+        4  - the number of motif repeats
+        5  - the total size of SSR
+        6  - start position
+        7  - end position
+
+    'genome1.fa-and-genome2.fa.compare' includes 15 columns :
+        1  - sequence name of genome 1
+        2  - SSR motif of genome 1
+        3  - the number of motif repeats of genome 1
+        4  - start position of genome 1
+        5  - end position of genome 1
+        6  - sequence name of genome 2
+        7  - SSR motif of genome 2
+        8  - the number of motif repeats of genome 2
+        9  - start position of genome 2
+        10 - end position of genome 2
+        11 - left flanking sequence (Simultaneous flanking sequence of genome1 SSR and genome2 SSR)
+        12 - the length of left flanking sequence
+        13 - right flanking sequence (Simultaneous flanking sequence of genome1 SSR and genome2 SSR)
+        14 - the length of right flanking sequence
+        15 - polymorphism judgment ( yes = polymorphism, no = monomorphism )
+
+3. If you output detailed intermediate file (option '-d'), you will get some other files,
+   which is similar to the above format.
+
+
+Email
+=====
+
+If you have any question or suggestion, please contact us. (xjgou@stu.sicau.edu.cn)
