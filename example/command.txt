@@ -1,0 +1,14 @@
+SSRMMD is tested in Linux or Windows !!!
+
+1. just find SSR loci :
+
+    perl SSRMMD.pl -f1 example1.fa -t 2
+
+    #the output file is : example1.fa.all_SSRs_with_fs
+
+
+2. find candidate polymorphic SSR :
+
+    perl SSRMMD.pl -f1 example1.fa -f2 example2.fa -p 1 -t 2
+
+    #the output file is : example1.fa.all_SSRs, example2.fa.all_SSRs and example1.fa-and-example2.fa.compare
