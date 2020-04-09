@@ -1,0 +1,12 @@
+Programs 'SSRMMD.exe' and 'connectorToPrimer3.exe' have been compiled
+on the windows platform, which means:
+    1. 'SSRMMD.exe' corresponds to the script 'SSRMMD.pl';
+    2. 'connectorToPrimer3.exe' corresponds to the script 'connectorToPrimer3.pl';
+    3. 'SSRMMD.exe' and 'connectorToPrimer3.exe' can only run on windows platform;
+    4. No need to install PERL5, you can use them directly.
+
+For SSRMMD, to show usage:
+    SSRMMD.exe -h
+
+For connectorToPrimer3, to show usage:
+    connectorToPrimer3.exe -h
