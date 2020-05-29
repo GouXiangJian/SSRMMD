@@ -1,0 +1,250 @@
+Table of Contents :
+     1. Author
+     2. Date
+     3. Citation
+     4. Introduction
+     5. Download
+     6. Install
+     7. Usage
+     8. Options
+     9. Example - only mining perfect SSR loci
+    10. Example - further mining candidate polymorphic SSRs
+    11. Output
+    12. Primer design
+    13. Only for windows
+
+1. Author
+=========
+
+Xiangjian Gou (xjgou@stu.sicau.edu.cn), Haoran Shi (542561234@qq.com)
+
+2. Date
+=======
+
+2020-05-29
+
+3. Citation
+===========
+
+Gao et al. (2019) published an article in the journal 'Frontiers in Plant Science' that has cited SSRMMD. 
+paper name : A Novel QTL Conferring Fusarium Crown Rot Resistance Located on Chromosome Arm 6HL in Barley.
+the doi is : 10.3389/fpls.2019.01206
+
+4. Introduction
+===============
+
+SSRMMD (Simple Sequence Repeat Molecular Marker Developer) is a tool that can mine perfect SSR loci
+and candidate polymorphic SSRs from assembled sequences (e.g. genome, transcriptome, or single gene).
+
+It is written in PERL5, so you should have PERL5 on your computer. 
+You can download PERL5 from https://www.perl.org/
+
+5. Download
+===========
+
+You can download SSRMMD from https://github.com/GouXiangJian/SSRMMD
+
+6. Install
+==========
+
+You don't need to do anything extra, use it directly.
+
+7. Usage
+========
+
+perl SSRMMD.pl option1 <value1> option2 <value2> ... optionN <valueN>
+
+8. Options
+==========
+
+<Here are some basic options>:
+
+  -p  | -poly   <INT> : specify how to work of SSRMMD. (default: 0)
+                            0 : only mining perfect SSR loci
+                            1 : further mining polymorphic SSRs
+
+  -o  | -outDir <STR> : specify a directory for storing output file, create
+                        directory if it doesn't exist. (default: SSRMMDOUT)
+
+  -t  | -thread <INT> : the number of threads for running. (default: 1)
+
+<Here are some options of mining perfect SSR loci>:
+
+  -f1 | -fasta1 <STR> : a FASTA file for mining SSR loci. (must be provided)
+
+  -f2 | -fasta2 <STR> : another FASTA file when plan to mine polymorphic SSRs.
+
+  -e  | -excav  <INT> : specify a method for mining SSR loci. (default: 0)
+                            0 : mining SSR by integrated regular expression
+                            1 : mining SSR by simple regular expression
+                        Note: integrated regular expression mean that traversal
+                        each sequence only once, no matter how many motifs are
+                        set (option '-mo'). It usually has faster computational
+                        speed, but sometimes it misses (extremely low probabil-
+                        ity) some compound SSR.
+
+  -mo | -motifs <STR> : threshold of motif. (default: 1=10,2=7,3=6,4=5,5=4,6=4)
+                            left  of equal : length of motif
+                            right of equal : the minimum number of repeat
+
+  -n  | -minLen <INT> : the minimum length of SSR. (default: 10)
+
+  -x  | -maxLen <INT> : the maximum length of SSR. (default: 10000)
+
+  -l  | -length <INT> : length of SSR flanking sequences. (default: 100)
+                        Note: if option '-p' = 1, flanking sequences will be 
+                        used to check for conservativeness and uniqueness.
+
+  -ss | -stats  <INT> : whether to output SSR statistics file. (default: 0)
+                            0 : not output
+                            1 : yes output
+
+<Here are some options of checking flanking sequences conservativeness>:
+
+  -me | -method   <STR>   : Algorithm for exactly checking flanking sequences
+                            conservativeness. (default: NO)
+                                NO : only simple check by HASH
+                                LD : global alignment by Levenshtein Distance
+                                NW : global alignment by Needleman-Wunsch
+                            Note: 'NO' mean flanking sequences are perfectly
+                            conservative, while 'LD' and 'NW' allow mismatch
+                            or indel in flanking sequences.
+
+  -r  | -reduce   <FLOAT> : conservativeness pre-alignment by using X% flanking
+                            sequences near SSR. (default: 0.05 [X% = 5%])
+                            Note: -r only make sense when option '-me' = LD/NW.
+
+  -u  | -unmatch  <INT>   : set the maximum number of mismatch base during
+                            pre-alignment. (default: 0)
+                                0 : no  mismatch
+                                1 : one mismatch
+                                2 : two mismatch
+                            Note: we assume that flanking sequences near SSR
+                            are highly conservative.
+
+  -d  | -distance <FLOAT> : if option '-me' = LD, set threshold of Levenshtein
+                            Distance. (default: 0.05 [5%])
+                            Note: the smaller the Levenshtein Distance, the 
+                            higher the sequence identity.
+
+  -i  | -identity <FLOAT> : if option '-me' = NW, set threshold of sequence
+                            identity calculated by Needleman-Wunsch algori-
+                            thm. (default: 0.95 [95%])
+
+  -sc | -score    <STR>   : mapping score of NW algorithm. (default: 1,-1,-2)
+                            Note: here, 1 = match, -1 = mismatch, -2 = indel
+
+<Here are some options of checking flanking sequences uniqueness>:
+
+  -g1 | -genome1  <STR> : genome file of fasta1 for checking flanking sequences
+                          uniqueness in genome-scale. (default: fasta1 file)
+
+  -g2 | -genome2  <STR> : genome file of fasta2 for checking flanking sequences
+                          uniqueness in genome-scale. (default: fasta2 file)
+
+  -st | -uniStyle <INT> : specify a run style to check uniqueness. (default: 0)
+                              0 : run in a time-saving manner
+                              1 : run in a memory-saving manner
+
+  -si | -uniSize  <INT> : if option '-st' = 1, set data size of each uniqueness
+                          check. (default: 10 [10Mb])
+                          Note : the smaller value, the smaller memory used.
+
+<Here are some other options>:
+
+  -a  | -all      <INT> : whether to output intermediate file. (default: 0)
+                              0 : not output
+                              1 : yes output (be used to debug)
+
+  -w  | -workLog  <STR> : create a file to record run log. (default: STDOUT)
+
+  -v  | -version        : show the version information.
+
+  -h  | -help           : show the help information.
+
+9. Example - only mining perfect SSR loci
+=========================================
+
+Suppose you have a FASTA file named test.fa !
+
+example1 : Run SSRMMD with all default parameters :
+    perl SSRMMD.pl -f1 test.fa
+
+example2 : Set flanking sequences to 200 bp, output SSR statistics, and change motif threshold :
+    perl SSRMMD.pl -f1 test.fa -l 200 -ss 1 -mo 1=12,2=6,3=5,4=5,5=5,6=4
+
+10. Example - further mining candidate polymorphic SSRs
+=======================================================
+
+Suppose you have two FASTA files named test1.fa and test2.fa !
+
+example3 : Use 8 threads to mine candidate polymorphic SSRs :
+    perl SSRMMD.pl -f1 test1.fa -f2 test2.fa -p 1 -t 8
+
+example4 : Check flanking sequences conservativeness by Levenshtein Distance :
+    perl SSRMMD.pl -f1 test1.fa -f2 test2.fa -p 1 -me LD
+
+11. Output
+==========
+
+Suppose you have two FASTA files named test1.fa and test2.fa !
+
+1. If you only mining SSR loci, you will get a file (test1.fa.SSRs) suffixed
+   with 'SSRs', which includes 12 columns :
+
+        1  - SSR number
+        2  - sequence name
+        3  - SSR motif
+        4  - motif length
+        5  - the number of motif repeats
+        6  - the total size of SSR
+        7  - start position
+        8  - end position
+        9  - left flanking sequence
+        10 - the length of left flanking sequence
+        11 - right flanking sequence
+        12 - the length of right flanking sequence
+
+2. If you mining candidate polymorphic SSR, you will get three files (test1.fa.SSRs, test2.fa.SSRs,
+   test1.fa-and-test2.fa.compare). Two files suffixed with 'SSRs' have the same format as above file,
+   and 'test1.fa-and-test2.fa.compare' includes 20 columns :
+
+        1  - SSR number
+        2  - sequence name of fasta1
+        3  - SSR motif of fasta1
+        4  - the number of motif repeats of fasta1
+        5  - start position of fasta1
+        6  - end position of fasta1
+        7  - sequence name of fasta2
+        8  - SSR motif of fasta2
+        9  - the number of motif repeats of fasta2
+        10 - start position of fasta2
+        11 - end position of fasta2
+        12 - left flanking sequence of fasta1
+        13 - the length of left flanking sequence of fasta1
+        14 - for left flanking sequence, the Levenshtein Distance (LD) between fasta1 and fasta2
+        15 - for left flanking sequence, the sequence identity between fasta1 and fasta2 calculated by Needleman-Wunsch(NW) algorithm
+        16 - right flanking sequence of fasta1
+        17 - the length of right flanking sequence of fasta1
+        18 - for right flanking sequence, the Levenshtein Distance (LD) between fasta1 and fasta2
+        19 - for right flanking sequence, the sequence identity between fasta1 and fasta2 calculated by Needleman-Wunsch(NW) algorithm
+        20 - polymorphism judgment ( yes = polymorphism, no = monomorphism )
+
+12. Primer design
+=================
+
+We have provided a tool 'connectorToPrimer3' to connect SSRMMD and Primer3, hence, primer design
+can be easily performed. You can use the following command to see detailed usage:
+
+    perl connectorToPrimer3.pl -h
+
+13. Only for windows
+====================
+
+In the 'bin' directory, programs 'SSRMMD.exe' and 'connectorToPrimer3.exe' have been compiled on
+the windows platform, which means no need to install PERL5, you can use them directly.
+
+You can use the following command to see detailed usage:
+
+    SSRMMD.exe -h
+    connectorToPrimer3.exe -h
